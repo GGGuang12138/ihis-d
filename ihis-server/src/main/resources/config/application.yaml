@@ -1,0 +1,46 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ihis_d?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 12345678
+    hikari:
+      pool-name: DataHikariCP
+      minimum-idle: 5
+#      最大连接数，默认为10
+      maximum-pool-size: 10
+#      空闲连接存活时间：3分钟，默认600000毫秒（10分钟）
+      idle-timeout: 180000
+#      连接最大存活时间：30分钟，默认也是30分钟
+      max-lifetime: 1800000
+#      连接超时时间：30秒，默认也是30秒
+      connection-timeout: 30000
+#      连接是否自动提交
+      auto-commit: true
+#      测试连接是否可用的查询语句
+      connection-test-query: SECLET 1
+
+mybatis-plus:
+#  配置文件所在位置
+  mapper-locations:  classpath*:/mapper/*Mapper.xml
+#  mybatis数据返回类型别名
+  type-aliases-package: com.gg.server.entity
+#  下划线自动变驼峰命名
+  configuration:
+    map-underscore-to-camel-case: false
+logging:
+  level:
+    com.gg.server.mapper: debug
+
+jwt:
+  # JWT存储的请求头
+  tokenHeader: Authorization
+  # 加密密钥
+  secret: ggnb
+  # 过期时间，24小时（60*60*24）
+  expiration: 604800
+  # 负载中拿到的开头
+  tokenHead: bear
+
