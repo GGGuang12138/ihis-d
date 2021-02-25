@@ -23,4 +23,11 @@ public interface DoctorService extends IService<Doctor> {
      * @return
      */
     RespBean login(String username, String password, HttpServletRequest request);
+
+    /**
+     * 根据用户名获取用户信息
+     * @param username
+     * @return
+     */
+    Doctor getDoctorByUsername(String username);
 }

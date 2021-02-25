@@ -1,5 +1,6 @@
 package com.gg.server.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gg.server.config.security.JwtTokenUtil;
 import com.gg.server.entity.Doctor;
 import com.gg.server.mapper.DoctorMapper;
@@ -30,14 +31,16 @@ import java.util.Map;
 @Service
 public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> implements DoctorService {
 
+    @Value("${jwt.tokenHead}")
+    private String tokenHead;
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-    @Value("${jwt.tokenHead}")
-    private String tokenHead;
+    @Autowired
+    private DoctorMapper doctorMapper;
     /**
      * 登陆之后返回token
      * @param username
@@ -68,5 +71,16 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
         tokenMap.put("token", token);
         tokenMap.put("tokenHead", tokenHead);
         return RespBean.success("登陆成功",tokenMap);
+    }
+
+    /**
+     * 根据用户名获取用户信息
+     * @param username
+     * @return
+     */
+    @Override
+    public Doctor getDoctorByUsername(String username) {
+        return doctorMapper.selectOne(new QueryWrapper<Doctor>().eq("username", username)
+                .eq("enable",true));
     }
 }
