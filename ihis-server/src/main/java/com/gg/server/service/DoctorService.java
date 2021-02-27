@@ -22,7 +22,7 @@ public interface DoctorService extends IService<Doctor> {
      * @param password
      * @return
      */
-    RespBean login(String username, String password, HttpServletRequest request);
+    RespBean login(String username, String password, String code, HttpServletRequest request);
 
     /**
      * 根据用户名获取用户信息

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -49,8 +50,15 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
      * @return
      */
     @Override
-    public RespBean login(String username, String password, HttpServletRequest request) {
+    public RespBean login(String username, String password, String code, HttpServletRequest request) {
         // 登陆判断
+        String captcha = (String) request.getSession().getAttribute("captcha");
+        if (StringUtils.isEmpty(code)){
+            return RespBean.error("验证码不能为空");
+        }
+        if (!captcha.equalsIgnoreCase(code)){
+            return RespBean.error("验证码错误");
+        }
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (null == userDetails){
             return RespBean.error("用户名错误");
@@ -80,9 +88,7 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
      */
     @Override
     public Doctor getDoctorByUsername(String username) {
-        Doctor doctor = doctorMapper.selectOne(new QueryWrapper<Doctor>().eq("username", username)
+        return doctorMapper.selectOne(new QueryWrapper<Doctor>().eq("username", username)
                 .eq("enabled", true));
-        doctor.setUsername(null);
-        return doctor;
     }
 }

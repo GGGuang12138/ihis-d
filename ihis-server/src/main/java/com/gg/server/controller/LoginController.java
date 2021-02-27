@@ -31,7 +31,8 @@ public class LoginController {
     @ApiOperation(value = "登陆之后返回token")
     @PostMapping("/login")
     public RespBean login(@RequestBody DoctorLoginParam doctorLoginParam, HttpServletRequest request){
-        return doctorService.login(doctorLoginParam.getUsername(), doctorLoginParam.getPassword(), request);
+        return doctorService.login(doctorLoginParam.getUsername(), doctorLoginParam.getPassword(),
+                doctorLoginParam.getCode(),request);
     }
 
     @ApiOperation(value = "获取当前登陆用户信息")
@@ -42,7 +43,7 @@ public class LoginController {
         }
         String username = principal.getName();
         Doctor doctor = doctorService.getDoctorByUsername(username);
-        doctor.setName(null);
+        doctor.setPassword(null);
         return doctor;
 
     }
