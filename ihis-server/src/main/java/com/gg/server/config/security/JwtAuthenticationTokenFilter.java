@@ -45,7 +45,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             if (null != username && null == SecurityContextHolder.getContext().getAuthentication()){
                 // 登陆 即验证token是否有效，并设置成全局上下文用户对象
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if(jwtTokenUtil.validateToken(tokenHead,userDetails)){
+                if(jwtTokenUtil.validateToken(authToken,userDetails)){
                     UsernamePasswordAuthenticationToken authenticationToken
                             = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
@@ -53,6 +53,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 }
             }
         }
+        // 进入下一个过滤器
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -54,8 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // 授权管理
                 .authorizeRequests()
-                // 允许以下
-                .antMatchers("/login","/logout").permitAll()
+                // 允许以下 (所有请求都需要认证，登陆放行交由webFilter处理)
+                // .antMatchers("/login","/logout").permitAll()
                 // 其他都需要授权
                 .anyRequest().authenticated()
                 .and()
@@ -69,8 +70,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling()
                 .accessDeniedHandler(restfulAccessDeniedHandler)
                 .authenticationEntryPoint(restAuthorizationEntryPoint);
+    }
 
-
+    /**
+     * 不拦截链接
+     * @param web
+     * @throws Exception
+     */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(
+                "/login",
+                "/logout",
+                "/css/**",
+                "/js/**",
+                "/index.html",
+                "favicon.ico",
+                "/doc.html",
+                "/webjars/**",
+                "/swagger-resources/**",
+                "/v2/api-docs/**"
+        );
     }
 
     /**

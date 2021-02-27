@@ -80,7 +80,9 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
      */
     @Override
     public Doctor getDoctorByUsername(String username) {
-        return doctorMapper.selectOne(new QueryWrapper<Doctor>().eq("username", username)
-                .eq("enable",true));
+        Doctor doctor = doctorMapper.selectOne(new QueryWrapper<Doctor>().eq("username", username)
+                .eq("enabled", true));
+        doctor.setUsername(null);
+        return doctor;
     }
 }

@@ -20,7 +20,7 @@ spring:
 #      连接是否自动提交
       auto-commit: true
 #      测试连接是否可用的查询语句
-      connection-test-query: SECLET 1
+      connection-test-query: SELECT 1
 
 mybatis-plus:
 #  配置文件所在位置
