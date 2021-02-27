@@ -21,9 +21,9 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("d_doctor_role")
-@ApiModel(value="DoctorRole对象", description="")
-public class DoctorRole implements Serializable {
+@TableName("d_menu_role")
+@ApiModel(value="MenuRole对象", description="")
+public class MenuRole implements Serializable {
 
     private static final long serialVersionUID=1L;
 
@@ -31,8 +31,8 @@ public class DoctorRole implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @ApiModelProperty(value = "用户id")
-    private Integer doctorId;
+    @ApiModelProperty(value = "菜单id")
+    private Integer mid;
 
     @ApiModelProperty(value = "权限id")
     private Integer rid;

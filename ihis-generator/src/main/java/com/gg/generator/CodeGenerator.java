@@ -54,7 +54,7 @@ public class CodeGenerator {
 
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig();
-        strategyConfig.setInclude("d_doctor"); // 生成单表写法
+        strategyConfig.setInclude("d_role","d_doctor_role","d_menu","d_menu_role"); // 生成单表写法
         // strategyConfig.setInclude("user","product"); // 生成多张表写法。生成所有表，不用配置
         strategyConfig.setTablePrefix("d"+"_"); // 去表前缀d,根据实际情况填写
         strategyConfig.setNaming(NamingStrategy.underline_to_camel);// 表映射规则

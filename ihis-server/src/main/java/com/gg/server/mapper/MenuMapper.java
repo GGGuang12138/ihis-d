@@ -1,6 +1,6 @@
 package com.gg.server.mapper;
 
-import com.gg.server.entity.DoctorRole;
+import com.gg.server.entity.Menu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author gg
  * @since 2021-02-27
  */
-public interface DoctorRoleMapper extends BaseMapper<DoctorRole> {
+public interface MenuMapper extends BaseMapper<Menu> {
 
 }

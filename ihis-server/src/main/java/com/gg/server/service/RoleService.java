@@ -1,6 +1,6 @@
 package com.gg.server.service;
 
-import com.gg.server.entity.DoctorRole;
+import com.gg.server.entity.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author gg
  * @since 2021-02-27
  */
-public interface DoctorRoleService extends IService<DoctorRole> {
+public interface RoleService extends IService<Role> {
 
 }
