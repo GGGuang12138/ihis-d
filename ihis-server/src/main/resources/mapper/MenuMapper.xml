@@ -20,4 +20,49 @@
         id, url, path, component, name, iconCls, requireAuth, parentId, enabled
     </sql>
 
+    <resultMap id="Menus" type="com.gg.server.entity.Menu" extends="BaseResultMap">
+        <collection property="children" ofType="com.gg.server.entity.Menu">
+            <id column="id2" property="id" />
+            <result column="url2" property="url" />
+            <result column="path2" property="path" />
+            <result column="component2" property="component" />
+            <result column="name2" property="name" />
+            <result column="iconCls2" property="iconCls" />
+            <result column="requireAuth2" property="requireAuth" />
+            <result column="parentId2" property="parentId" />
+            <result column="enabled2" property="enabled" />
+        </collection>
+    </resultMap>
+
+    <select id="getMenuByDoctorId" resultMap="Menus">
+        SELECT
+            DISTINCT
+            m1.*,
+            m2.id as id2,
+            m2.url as url2,
+            m2.path as path2,
+            m2.component as component2,
+            m2.`name` as `name2`,
+            m2.iconCls as iconCls2,
+            m2.requireAuth as requireAuth2,
+            m2.parentId as parentId2,
+            m2.enabled as enabled2
+        FROM
+            d_menu m1,
+            d_menu m2,
+            d_doctor_role dr,
+            d_menu_role mr
+        WHERE
+            m1.id = m2.parentId
+          AND
+            m2.id = mr.mid
+          AND
+            mr.rid = dr.rid
+          AND
+            dr.doctorId = ${id}
+          AND
+            m2.enabled = TRUE
+
+    </select>
+
 </mapper>

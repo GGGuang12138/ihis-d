@@ -1,7 +1,10 @@
 package com.gg.server.service;
 
+import com.gg.server.entity.Menu;
 import com.gg.server.entity.MenuRole;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>

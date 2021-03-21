@@ -10,10 +10,8 @@ import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 
 /**
- * 执行 main 方法控制台输入模块表名回车自动生成对应项目目录中
- *
- * @author zhoubin
- * @since 1.0.0
+ * 修改基本配置中的表名，执行 main 方法即可生成Controller、Service（继承Iservice）、mapper（继承baseMapper、以及mapper.xml）
+ * @author cgg
  */
 
 public class CodeGenerator {

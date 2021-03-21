@@ -3,6 +3,7 @@ package com.gg.server.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gg.server.config.security.JwtTokenUtil;
 import com.gg.server.entity.Doctor;
+import com.gg.server.entity.Menu;
 import com.gg.server.mapper.DoctorMapper;
 import com.gg.server.pojo.RespBean;
 import com.gg.server.service.DoctorService;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
