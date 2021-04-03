@@ -6,6 +6,7 @@ import com.gg.server.mapper.MenuMapper;
 import com.gg.server.service.MenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
     @Autowired
     private MenuMapper menuMapper;
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
 
     /**
      * 通过用户ID获取用户信息
