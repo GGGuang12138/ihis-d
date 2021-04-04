@@ -40,7 +40,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         if (null != header && header.startsWith(tokenHead)){
             // 除去header（tokenKey）、head（token前缀）
             String authToken = header.substring(tokenHead.length());
-            String username = jwtTokenUtil.getUserNameFromToken(authToken);
+            String username = jwtTokenUtil.getUserNameFromToken(authToken); // 抛出异常
             // 存在token，但未登陆
             if (null != username && null == SecurityContextHolder.getContext().getAuthentication()){
                 // 登陆 即验证token是否有效，并设置成全局上下文用户对象
