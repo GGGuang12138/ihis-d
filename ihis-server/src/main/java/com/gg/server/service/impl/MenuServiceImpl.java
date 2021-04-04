@@ -50,4 +50,13 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         return menus;
     }
 
+    /**
+     * 查询菜单可访问角色列表
+     * @return
+     */
+    @Override
+    public List<Menu> getMenusWithRole() {
+        return menuMapper.getMenusWithRole();
+    }
+
 }

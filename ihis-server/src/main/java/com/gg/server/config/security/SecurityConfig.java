@@ -5,14 +5,17 @@ import com.gg.server.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -29,6 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private RestAuthorizationEntryPoint restAuthorizationEntryPoint;
     @Autowired
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+    @Autowired
+    private RBACAccessDecisionManager rbacAccessDecisionManager;
+    @Autowired
+    private RBACSecurityMetadataSource rbacSecurityMetadataSource;
 
 
     /**
@@ -59,6 +66,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .antMatchers("/login","/logout").permitAll()
                 // 其他都需要授权
                 .anyRequest().authenticated()
+                // 动态权限配置
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                        object.setAccessDecisionManager(rbacAccessDecisionManager);
+                        object.setSecurityMetadataSource(rbacSecurityMetadataSource);
+                        return object;
+                    }
+                })
                 .and()
                 // 禁用缓存
                 .headers()
@@ -91,6 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/swagger-resources/**",
                 "/v2/api-docs/**",
                 "/captcha"
+                // 放开全部进行测试
         );
     }
 
@@ -104,9 +121,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return username -> {
             Doctor doctor = doctorService.getDoctorByUsername(username);
             if (doctor!=null) {
+                doctor.setRoles(doctorService.getRoles(doctor.getId()));
                 return doctor;
             }
-            return null;
+            throw new UsernameNotFoundException("用户名错误");
         };
     }
 

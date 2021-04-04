@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gg.server.config.security.JwtTokenUtil;
 import com.gg.server.entity.Doctor;
 import com.gg.server.entity.Menu;
+import com.gg.server.entity.Role;
 import com.gg.server.mapper.DoctorMapper;
+import com.gg.server.mapper.RoleMapper;
 import com.gg.server.pojo.RespBean;
 import com.gg.server.service.DoctorService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -44,6 +46,8 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private DoctorMapper doctorMapper;
+    @Autowired
+    private RoleMapper roleMapper;
     /**
      * 登陆之后返回token
      * @param username
@@ -92,5 +96,15 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
     public Doctor getDoctorByUsername(String username) {
         return doctorMapper.selectOne(new QueryWrapper<Doctor>().eq("username", username)
                 .eq("enabled", true));
+    }
+
+    /**
+     * 根据用户 id 查询对应角色列表
+     * @param doctorId
+     * @return
+     */
+    @Override
+    public List<Role> getRoles(Integer doctorId) {
+        return roleMapper.getRoles(doctorId);
     }
 }

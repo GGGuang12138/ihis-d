@@ -13,5 +13,17 @@
     <sql id="Base_Column_List">
         id, name, nameZh
     </sql>
+    <select id="getRoles" resultType="com.gg.server.entity.Role">
+        SELECT
+            r.id,
+            r.name,
+            r.nameZh
+        FROM
+            d_role r
+                LEFT JOIN
+            d_doctor_role dr ON r.id=dr.rid
+        WHERE
+            dr.`doctorId`=#{doctorId}
+    </select>
 
 </mapper>

@@ -3,6 +3,7 @@ package com.gg.server.service;
 import com.gg.server.entity.Doctor;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.gg.server.entity.Menu;
+import com.gg.server.entity.Role;
 import com.gg.server.pojo.RespBean;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,4 +33,11 @@ public interface DoctorService extends IService<Doctor> {
      * @return
      */
     Doctor getDoctorByUsername(String username);
+
+    /**
+     * 根据用户 id 查询对应角色列表
+     * @param doctorId
+     * @return
+     */
+    List<Role> getRoles(Integer doctorId);
 }

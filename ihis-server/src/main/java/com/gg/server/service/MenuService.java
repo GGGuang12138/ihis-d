@@ -20,4 +20,10 @@ public interface MenuService extends IService<Menu> {
      */
     List<Menu> getMenuByDoctorId();
 
+    /**
+     * 查询菜单可访问角色列表
+     * @return
+     */
+    List<Menu> getMenusWithRole();
+
 }

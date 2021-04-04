@@ -28,6 +28,15 @@ public class LoginController {
     @Autowired
     private DoctorService doctorService;
 
+    @GetMapping("/inqury/hello")
+    private String hello2(){
+        return "医生接诊";
+    }
+    @GetMapping("/system/basic/hello")
+    private String hello3(){
+        return "认证中心";
+    }
+
     @ApiOperation(value = "登陆之后返回token")
     @PostMapping("/login")
     public RespBean login(@RequestBody DoctorLoginParam doctorLoginParam, HttpServletRequest request){
@@ -36,7 +45,7 @@ public class LoginController {
     }
 
     @ApiOperation(value = "获取当前登陆用户信息")
-    @GetMapping("/doctor/info")
+    @GetMapping("/user/info")
     public Doctor getDoctorInfo(Principal principal){
         if (null == principal){
             return null;
@@ -44,6 +53,7 @@ public class LoginController {
         String username = principal.getName();
         Doctor doctor = doctorService.getDoctorByUsername(username);
         doctor.setPassword(null);
+        doctor.setRoles(doctorService.getRoles(doctor.getId()));
         return doctor;
 
     }

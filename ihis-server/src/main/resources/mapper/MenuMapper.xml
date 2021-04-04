@@ -34,6 +34,14 @@
         </collection>
     </resultMap>
 
+    <resultMap id="MenusWithRole" type="com.gg.server.entity.Menu" extends="BaseResultMap">
+        <collection property="roles" ofType="com.gg.server.entity.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
+
     <select id="getMenuByDoctorId" resultMap="Menus">
         SELECT
             DISTINCT
@@ -63,6 +71,20 @@
           AND
             m2.enabled = TRUE
 
+    </select>
+    <select id="getMenusWithRole" resultMap="MenusWithRole">
+        SELECT
+            m.*,
+            r.id as rid,
+            r.name as rname,
+            r.nameZh as rnameZH
+        FROM
+            d_menu m,
+            d_menu_role dr,
+            d_role r
+        WHERE
+            m.id = dr.mid
+          AND r.id = dr.rid
     </select>
 
 </mapper>

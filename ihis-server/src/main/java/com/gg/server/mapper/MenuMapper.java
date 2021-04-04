@@ -23,4 +23,9 @@ public interface MenuMapper extends BaseMapper<Menu> {
      */
     List<Menu> getMenuByDoctorId(Integer id);
 
+    /**
+     * 查询菜单可访问角色列表
+     * @return
+     */
+    List<Menu> getMenusWithRole();
 }
