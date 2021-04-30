@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.gg.server.entity.Menu;
 import com.gg.server.entity.Role;
 import com.gg.server.pojo.RespBean;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  * @author gg
  * @since 2021-02-15
  */
+@Service
 public interface DoctorService extends IService<Doctor> {
 
     /**

@@ -19,8 +19,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,9 +61,20 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
     @Override
     public RespBean login(String username, String password, String code, HttpServletRequest request) {
         // 登陆判断
-        String captcha = (String) request.getSession().getAttribute("captcha");
         if (StringUtils.isEmpty(code)){
             return RespBean.error("验证码不能为空");
+        }
+        BASE64Decoder decoder = new BASE64Decoder();
+        String header = request.getHeader("captcha");
+        String captcha = null;
+        try {
+            byte[] bytes = decoder.decodeBuffer(request.getHeader("captcha"));
+            captcha = new String(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (StringUtils.isEmpty(captcha)){
+            return RespBean.error("验证码验证错误,重新加载");
         }
         if (!captcha.equalsIgnoreCase(code)){
             return RespBean.error("验证码错误");
