@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * RBAC权限控制
- * 根据返回URL查询该菜单需要的角色
+ * 根据返回URL查询该菜单可以访问的角色
  * @author: GG
  * @date: 2021/4/4 11:57 上午
  */
@@ -32,7 +32,7 @@ public class RBACSecurityMetadataSource implements FilterInvocationSecurityMetad
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         // 获取请求的 url
         String requestUrl = ((FilterInvocation) object).getRequestUrl();
-        // 查询菜单（带有对应所需要的角色）
+        // 查询所有菜单（带有对应所需要的角色）
         List<Menu> menus = menuService.getMenusWithRole();
         // 判断请求 url 与菜单匹配（返回需要角色）
         for (Menu menu : menus) {

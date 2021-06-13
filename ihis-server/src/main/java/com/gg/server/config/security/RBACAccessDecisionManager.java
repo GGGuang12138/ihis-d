@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * 权限控制
- * 获取当前角色列表 与 菜单所需角色列表 进行匹配
+ * 获取当前角色列表 与 菜单可访问角色列表 进行匹配
  * @author: GG
  * @date: 2021/4/4 11:58 上午
  */
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class RBACAccessDecisionManager implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> collection) throws AccessDeniedException, InsufficientAuthenticationException {
-        // 遍历 菜单所需角色列表
+        // 遍历 菜单可访问角色列表
         for (ConfigAttribute configAttribute : collection){
             // 在MetadataSource中获取
             String needRole = configAttribute.getAttribute();
@@ -36,10 +36,10 @@ public class RBACAccessDecisionManager implements AccessDecisionManager {
                     return;
                 }
             }
-            // 当前角色是否匹配
+            // 所需角色登陆人是否拥有
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            List<String> currentRole = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-            if (currentRole.contains(needRole)){
+            List<String> currentRoles = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+            if (currentRoles.contains(needRole)){
                 return;
             }
         }

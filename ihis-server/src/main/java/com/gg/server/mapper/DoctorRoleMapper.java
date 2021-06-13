@@ -2,6 +2,7 @@ package com.gg.server.mapper;
 
 import com.gg.server.entity.DoctorRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author gg
  * @since 2021-02-27
  */
+@Component
 public interface DoctorRoleMapper extends BaseMapper<DoctorRole> {
 
 }

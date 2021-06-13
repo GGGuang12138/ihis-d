@@ -2,14 +2,15 @@ package com.gg.server.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.gg.server.config.security.JwtTokenUtil;
-import com.gg.server.entity.Doctor;
-import com.gg.server.entity.Menu;
-import com.gg.server.entity.Role;
+import com.gg.server.entity.*;
 import com.gg.server.mapper.DoctorMapper;
+import com.gg.server.mapper.DoctorRoleMapper;
 import com.gg.server.mapper.RoleMapper;
 import com.gg.server.pojo.RespBean;
+import com.gg.server.pojo.enums.AdminMenu;
 import com.gg.server.service.DoctorService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sun.javadoc.Doc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,10 +21,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,8 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
     private DoctorMapper doctorMapper;
     @Autowired
     private RoleMapper roleMapper;
+    @Autowired
+    private DoctorRoleMapper doctorRoleMapper;
     /**
      * 登陆之后返回token
      * @param username
@@ -120,5 +124,80 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
     @Override
     public List<Role> getRoles(Integer doctorId) {
         return roleMapper.getRoles(doctorId);
+    }
+
+    /**
+     * 获取账号信息
+     * @return
+     */
+    @Override
+    public List<Doctor> getAccounts() {
+        List<Doctor> accounts = doctorMapper.getAccounts();
+        return accounts;
+    }
+
+    @Override
+    public Doctor getAccountById(Integer id) {
+        Doctor accountById = doctorMapper.getAccountById(id);
+        return accountById;
+    }
+
+    @Override
+    public RespBean updateAccount(Doctor doctor) {
+        if (doctor.getId() == null){
+            // 新增
+            doctor.setPhone(doctor.getUsername());
+            doctor.setPassword("$2a$10$ogvUqZZAxrBwrmVI/e7.SuFYyx8my8d.9zJ6bs9lPKWvbD9eefyCe");
+            doctor.setUserFace("https://img.yzcdn.cn/vant/cat.jpeg");
+            doctor.setCreateTime(LocalDate.now());
+            doctor.setRemark(doctor.getRemark());
+            doctor.setEnabled(doctor.isEnabled());
+            doctorMapper.insert(doctor);
+            // 添加账号角色
+            if (doctor.getRoles().size() == 0){
+                return RespBean.success("插入成功");
+            }
+            for (Role role: doctor.getRoles()){
+                DoctorRole doctorRole = new DoctorRole();
+                doctorRole.setDoctorId(doctor.getId());
+                doctorRole.setRid(role.getId());
+                doctorRoleMapper.insert(doctorRole);
+            }
+            return RespBean.success("新增成功");
+        } else {
+            // 在原来的信息上进行修改
+            Doctor doctorOld = doctorMapper.selectById(doctor.getId());
+            doctorOld.setRealName(doctor.getRealName());
+            doctorOld.setUsername(doctor.getUsername());
+            doctorOld.setPhone(doctor.getPhone());
+            doctorOld.setAccountType(doctor.getAccountType());
+            doctorOld.setRemark(doctor.getRemark());
+            doctorMapper.updateById(doctorOld);
+            // 添加菜单
+            // 遍历老角色列表是否还在新角色列表
+            for (Role role: getRoles(doctorOld.getId())){
+                if(doctor.getRoles().contains(role)){
+                    // 还在新角色里，不做更改
+                }else {
+                    // 不在新角色里，删除相关关系
+                    doctorRoleMapper.delete(new QueryWrapper<DoctorRole>()
+                            .eq("doctorId",role.getId())
+                            .eq("rid",role.getId()));
+                }
+            }
+            // 遍历新角色的列表是否已经存在老的角色列表上
+            for (Role role: doctor.getRoles()){
+                if(getRoles(doctorOld.getId()).contains(role)){
+                    // 老角色已存在不做处理
+                }else {
+                    // 老角色不存在，增加相关关系
+                    DoctorRole doctorRole = new DoctorRole();
+                    doctorRole.setDoctorId(doctor.getId());
+                    doctorRole.setRid(role.getId());
+                    doctorRoleMapper.insert(doctorRole);
+                }
+            }
+            return RespBean.success("修改成功");
+        }
     }
 }

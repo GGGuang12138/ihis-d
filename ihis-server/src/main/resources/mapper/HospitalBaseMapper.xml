@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gg.server.mapper.edu.HospitalBaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.gg.server.entity.edu.HospitalBase">
+        <id column="id" property="id" />
+        <result column="hspId" property="hspId" />
+        <result column="simpleName" property="simpleName" />
+        <result column="fullName" property="fullName" />
+        <result column="checkBySelf" property="checkBySelf" />
+        <result column="feature" property="feature" />
+        <result column="des" property="des" />
+        <result column="hspRank" property="hspRank" />
+        <result column="type" property="type" />
+    </resultMap>
+
+    <resultMap id="HospitalDepts" type="com.gg.server.entity.edu.HospitalBase" extends="BaseResultMap">
+        <collection property="depts" ofType="com.gg.server.entity.edu.HospitalDept">
+            <id column="did" property="id"/>
+            <result column="deptName" property="deptName" />
+        </collection>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, hspId, simpleName, fullName, checkBySelf, feature, des, hspRank, type
+    </sql>
+    <select id="getHospitalsWithDept" resultMap="HospitalDepts">
+        SELECT
+            eb.id as id,
+            eb.hspId as hspId,
+            eb.fullName as fullName,
+            eb.checkBySelf as checkBySelf,
+            ed.id as did,
+            ed.deptName as deptName
+        FROM
+            edu_hospital_base eb,
+            edu_hospital_dept ed
+        WHERE
+            eb.id = ed.hospId
+    </select>
+    <select id="getHospitalWithDept" resultMap="HospitalDepts">
+        SELECT
+        eb.id as id,
+        eb.hspId as hspId,
+        eb.simpleName as simpleName,
+        eb.fullName as fullName,
+        eb.checkBySelf as checkBySelf,
+        eb.des as des,
+        eb.hspRank as hspRank,
+        eb.type as type,
+        ed.id as did,
+        ed.deptName as deptName
+        FROM
+        edu_hospital_base eb,
+        edu_hospital_dept ed
+        WHERE
+        eb.id = ed.hospId
+        <if test="null!=id">
+            AND
+            eb.id = #{id}
+        </if>
+    </select>
+
+</mapper>

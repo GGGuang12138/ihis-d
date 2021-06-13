@@ -7,11 +7,21 @@
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="nameZh" property="nameZh" />
+        <result column="roleType" property="roleType" />
+        <result column="hspId" property="hspId" />
+        <result column="des" property="des" />
+    </resultMap>
+
+    <resultMap id="RoleWithMenu" type="com.gg.server.entity.Role" extends="BaseResultMap">
+        <collection property="menus" ofType="com.gg.server.entity.Menu">
+            <id column="mid" property="id"/>
+            <result column="mname" property="name" />
+        </collection>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, nameZh
+        id, name, nameZh, roleType, hspId, des
     </sql>
     <select id="getRoles" resultType="com.gg.server.entity.Role">
         SELECT
@@ -24,6 +34,48 @@
             d_doctor_role dr ON r.id=dr.rid
         WHERE
             dr.`doctorId`=#{doctorId}
+    </select>
+
+    <select id="getRoleByIdWithMenu" resultMap="RoleWithMenu">
+        SELECT
+            r.id as id,
+            r.name as name,
+            r.nameZh as nameZh,
+            r.roleType as roleType,
+            r.hspId as hspId,
+            r.des as des,
+            m.parentId as mid,
+            m2.`name` AS mname
+        FROM
+            d_role r,
+            d_menu_role dr,
+            d_menu m,
+            d_menu m2
+        WHERE
+            r.id = #{id}
+          AND
+            dr.rid = r.id
+          AND
+            m.id = dr.mid
+          AND
+            m.parentId = m2.id
+
+    </select>
+    <select id="getDrIdByNameRId" resultType="java.lang.Integer">
+        SELECT
+             dr.id as id
+         FROM
+             d_menu m,
+             d_menu m2,
+             d_menu_role dr
+         WHERE
+             m.`name` = #{parentName}
+           AND
+             m2.parentId = m.id
+           AND
+             dr.mid = m2.id
+           AND
+             dr.rid = #{id}
     </select>
 
 </mapper>

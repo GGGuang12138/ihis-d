@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gg.server.mapper.edu.DoctorBaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.gg.server.entity.edu.DoctorBase">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="sex" property="sex" />
+        <result column="hspId" property="hspId" />
+        <result column="offLineId" property="offLineId" />
+        <result column="titleId" property="titleId" />
+        <result column="titleName" property="titleName" />
+        <result column="deptId" property="deptId" />
+        <result column="deptName" property="deptName" />
+        <result column="des" property="des" />
+        <result column="better" property="better" />
+        <result column="state" property="state" />
+        <result column="hspName" property="hspName" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="authId" property="authId" />
+        <result column="updateTime" property="updateTime" />
+        <result column="type" property="type" />
+        <result column="level" property="level" />
+        <result column="nationLevel" property="nationLevel" />
+        <result column="did" property="did" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, sex, hspId, offLineId, titleId, titleName, deptId, deptName, des, better, state, hspName, coverUrl, authId,updateTime,did
+    </sql>
+
+</mapper>

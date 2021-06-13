@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gg.server.mapper.edu.HospitalDeptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.gg.server.entity.edu.HospitalDept">
+        <id column="id" property="id" />
+        <result column="hospId" property="hospId" />
+        <result column="deptName" property="deptName" />
+        <result column="shortName" property="shortName" />
+        <result column="des" property="des" />
+        <result column="deptId" property="deptId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, hospId, deptName, shortName, des, deptId
+    </sql>
+
+</mapper>

@@ -43,18 +43,18 @@ public class CodeGenerator {
         // 包配置
         PackageConfig packageConfig = new PackageConfig();
         packageConfig.setParent("com.gg.server");
-        packageConfig.setEntity("entity");
-        packageConfig.setMapper("mapper");
-        packageConfig.setController("controller");
-        packageConfig.setService("service");
-        packageConfig.setServiceImpl("service.impl");
+        packageConfig.setEntity("entity.edu");
+        packageConfig.setMapper("mapper.edu");
+        packageConfig.setController("controller.edu");
+        packageConfig.setService("service.edu");
+        packageConfig.setServiceImpl("service.edu.impl");
         autoGenerator.setPackageInfo(packageConfig);
 
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig();
-        strategyConfig.setInclude("d_role","d_doctor_role","d_menu","d_menu_role"); // 生成单表写法
+        strategyConfig.setInclude("edu_doctor_base", "edu_refund_info", "edu_article_statistics"); // 生成单表写法
         // strategyConfig.setInclude("user","product"); // 生成多张表写法。生成所有表，不用配置
-        strategyConfig.setTablePrefix("d"+"_"); // 去表前缀d,根据实际情况填写
+        strategyConfig.setTablePrefix("edu"+"_"); // 去表前缀d,根据实际情况填写
         strategyConfig.setNaming(NamingStrategy.underline_to_camel);// 表映射规则
         strategyConfig.setColumnNaming(NamingStrategy.no_change);// 属性映射规则
         strategyConfig.setEntityLombokModel(true);

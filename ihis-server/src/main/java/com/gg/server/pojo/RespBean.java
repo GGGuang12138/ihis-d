@@ -36,6 +36,15 @@ public class RespBean {
     }
 
     /**
+     * 成功返回结果
+     * @param obj
+     * @return
+     */
+    public static RespBean success(Object obj){
+        return new RespBean(200,"success",obj);
+    }
+
+    /**
      * 失败返回结果 500
      * @param message
      * @return

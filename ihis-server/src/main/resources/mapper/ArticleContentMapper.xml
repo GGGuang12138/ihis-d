@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gg.server.mapper.edu.ArticleContentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.gg.server.entity.edu.ArticleContent">
+        <id column="id" property="id" />
+        <result column="cid" property="cid" />
+        <result column="creatorId" property="creatorId" />
+        <result column="creatorName" property="creatorName" />
+        <result column="creatorTime" property="creatorTime" />
+        <result column="title" property="title" />
+        <result column="coverCount" property="coverCount" />
+        <result column="coverUrl" property="coverUrl" />
+        <result column="articleState" property="articleState" />
+        <result column="contentSummary" property="contentSummary" />
+        <result column="contentId" property="contentId" />
+        <result column="updateTime" property="updateTime" />
+        <result column="articleType" property="articleType"/>
+        <result column="contentUrl" property="contentUrl"/>
+        <result column="firstCheck" property="firstCheck"/>
+    </resultMap>
+
+    <resultMap id="ArticleSimpleInfo" type="com.gg.server.entity.edu.ArticleContent" extends="BaseResultMap">
+        <association property="channel" javaType="com.gg.server.entity.edu.Channel">
+            <id column="cid" property="id"/>
+            <result column="cname" property="name" />
+        </association>
+    </resultMap>
+    <resultMap id="ArticleWithChannelDoctor" type="com.gg.server.entity.edu.ArticleContent" extends="BaseResultMap">
+        <association property="channel" javaType="com.gg.server.entity.edu.Channel">
+            <id column="cid" property="id"/>
+            <result column="cname" property="name" />
+        </association>
+        <association property="doctorBase" javaType="com.gg.server.entity.edu.DoctorBase">
+            <id column="did" property="id"/>
+            <result column="dhspName" property="hspName"/>
+            <result column="ddeptName" property="deptName"/>
+            <result column="dcoverUrl" property="coverUrl"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, cid, creatorId, creatorName, creatorTime, title, coverCount, coverUrl, articleState, contentSummary, contentId, updateTime, articleType, contentUrl, firstCheck
+    </sql>
+
+    <select id="getArticleByPage" resultMap="ArticleSimpleInfo">
+        SELECT
+            a.id as id,
+            a.creatorName as creatorName,
+            a.creatorTime as creatorTime,
+            a.articleState as articleState,
+            a.updateTime as updateTime,
+            a.contentId as contentId,
+            a.coverUrl as coverUrl,
+            a.title as title,
+            a.articleType as articleType,
+            c.name as cname
+        FROM
+            edu_article_content a,
+            edu_channel c
+        WHERE
+            a.cid = c.id
+            <if test="null!=articleContent.title and ''!=articleContent.title">
+              AND
+              a.title LIKE CONCAT('%',#{articleContent.title},'%')
+            </if>
+            <if test="null!=articleContent.creatorName and ''!=articleContent.creatorName">
+                AND
+                a.creatorName LIKE CONCAT('%',#{articleContent.creatorName},'%')
+            </if>
+            <if test="null!=articleContent.cid">
+                AND
+                a.cid = #{articleContent.cid}
+            </if>
+            <if test="null!=articleContent.articleState">
+                AND
+                a.articleState = #{articleContent.articleState}
+            </if>
+
+            <if test="null!=createDateScope and 2 == createDateScope.length">
+            AND a.creatorTime BETWEEN #{createDateScope[0]} AND #{createDateScope[1]}
+            </if>
+        ORDER BY creatorTime DESC
+
+    </select>
+    <select id="getArticleByStatus" resultMap="ArticleWithChannelDoctor">
+        SELECT
+            a.id as id,
+            a.creatorId as creatorId,
+            a.creatorName as creatorName,
+            a.creatorTime as creatorTime,
+            a.articleState as articleState,
+            a.articleType as articleType,
+            a.updateTime as updateTime,
+            a.contentId as contentId,
+            a.coverUrl as coverUrl,
+            a.title as title,
+            c.name as cname,
+            b.id as did,
+            b.hspName as dhspName,
+            b.coverUrl as dcoverUrl,
+            b.deptName as ddeptName
+
+        FROM
+            edu_article_content a,
+            edu_channel c,
+            edu_doctor_base b
+        WHERE
+            a.cid = c.id
+          AND
+            a.creatorId = b.id
+          AND
+            a.articleState = #{articleStatus}
+          AND
+            a.firstCheck = #{firstCheck}
+    </select>
+
+</mapper>

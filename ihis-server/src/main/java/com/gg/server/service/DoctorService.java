@@ -2,7 +2,6 @@ package com.gg.server.service;
 
 import com.gg.server.entity.Doctor;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.gg.server.entity.Menu;
 import com.gg.server.entity.Role;
 import com.gg.server.pojo.RespBean;
 import org.springframework.stereotype.Service;
@@ -42,4 +41,23 @@ public interface DoctorService extends IService<Doctor> {
      * @return
      */
     List<Role> getRoles(Integer doctorId);
+
+    /**
+     * 获取账号信息
+     * @return
+     */
+    List<Doctor> getAccounts();
+
+
+    /**
+     * 通过Id获取账号信息
+     * @return
+     */
+    Doctor getAccountById(Integer id);
+
+    /**
+     * 添加账号
+     * @return
+     */
+    RespBean updateAccount(Doctor doctor);
 }

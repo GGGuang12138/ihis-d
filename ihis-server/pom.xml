@@ -22,6 +22,18 @@
   </properties>
 
   <dependencies>
+      <!--      fastJson-->
+      <dependency>
+          <groupId>com.alibaba</groupId>
+          <artifactId>fastjson</artifactId>
+          <version>1.2.32</version>
+      </dependency>
+<!--      云os-->
+      <dependency>
+          <groupId>com.aliyun.oss</groupId>
+          <artifactId>aliyun-sdk-oss</artifactId>
+          <version>3.10.2</version>
+      </dependency>
 <!--    web依赖-->
     <dependency>
       <groupId>org.springframework.boot</groupId>

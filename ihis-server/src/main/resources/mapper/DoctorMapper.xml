@@ -5,19 +5,95 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.gg.server.entity.Doctor">
         <id column="id" property="id" />
-        <result column="name" property="name" />
+        <result column="realName" property="realName" />
         <result column="username" property="username" />
         <result column="phone" property="phone" />
         <result column="enabled" property="enabled" />
         <result column="password" property="password" />
         <result column="userFace" property="userFace" />
         <result column="remark" property="remark" />
+        <result column="accountType" property="accountType" />
+        <result column="baseId" property="baseId" />
+        <result column="hspId" property="hspId" />
+        <result column="createTime" property="createTime"/>
     </resultMap>
-
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, username, phone, enabled, password, userFace, remark
+        id, realName, username, phone, enabled, password, userFace, remark, accountType, hspId, baseId,createTime
     </sql>
+
+    <resultMap id="AccountsWithRole" type="com.gg.server.entity.Doctor" extends="BaseResultMap">
+        <collection property="roles" ofType="com.gg.server.entity.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAccounts" resultMap="AccountsWithRole">
+#         SELECT
+#             DISTINCT
+#             d.username as username,
+#             d.userFace as userFace,
+#             d.realName as realName,
+#             b.hspName as hspName,
+#             d.createTime as createTime,
+#             dr.rid as rid,
+#             r.`name` as rname,
+#             r.nameZh as rnameZh
+#         FROM
+#             d_doctor d,
+#             edu_doctor_base b,
+#             d_doctor_role dr,
+#             d_role r
+#         WHERE
+#             d.baseId = b.id
+#           AND
+#             d.id = dr.doctorId
+#           AND
+#             dr.rid = r.id
+
+        SELECT
+            DISTINCT
+            d.id AS id,
+            d.username as username,
+            d.userFace as userFace,
+            d.realName as realName,
+            d.createTime as createTime,
+            dr.rid as rid,
+            r.`name` as rname,
+            r.nameZh as rnameZh
+        FROM
+            d_doctor d,
+            d_doctor_role dr,
+            d_role r
+        WHERE
+            d.id = dr.doctorId
+          AND
+            dr.rid = r.id
+    </select>
+    <select id="getAccountById" resultMap="AccountsWithRole">
+        SELECT
+            d.id AS id,
+            d.username as username,
+            d.realName as realName,
+            d.accountType as accountType,
+            d.enabled as enabled,
+            d.remark as remark,
+            dr.rid as rid,
+            r.`name` as rname,
+            r.nameZh as rnameZh
+        FROM
+            d_doctor d,
+            d_doctor_role dr,
+            d_role r
+        WHERE
+            d.id = dr.doctorId
+          AND
+            dr.rid = r.id
+          AND
+            d.id = #{id}
+    </select>
 
 </mapper>

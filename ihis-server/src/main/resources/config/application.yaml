@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8082
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,6 +22,7 @@ spring:
 #      测试连接是否可用的查询语句
       connection-test-query: SELECT 1
   redis:
+    password: 12345678
     timeout: 10000ms
     host: localhost
     port: 6379
@@ -32,7 +33,6 @@ spring:
         max-wait: 10000ms
         max-idle: 200
         min-idle: 5
-    password: 12345678
 mybatis-plus:
 #  配置文件所在位置
   mapper-locations:  classpath*:/mapper/*Mapper.xml
@@ -41,6 +41,8 @@ mybatis-plus:
 #  下划线自动变驼峰命名
   configuration:
     map-underscore-to-camel-case: false
+# 枚举
+  type-enums-package: com.gg.server.pojo.enums
 logging:
   level:
     com.gg.server.mapper: debug
@@ -54,4 +56,16 @@ jwt:
   expiration: 604800
   # 负载中拿到的开头
   tokenHead: Bearer
+
+file-service:
+  # classId-vod
+  classId-vod: ac8d941c3803d0771908bdfcd874b58f
+  # classId-img
+  classId-img: e695bdb48b01db04fd20b95f3e61f092
+  # partnerId
+  #partnerId: ab2e51ab488a57e60b0f3117e3b76ebf
+  partnerId: c9062ae380fbcf83eb9e9c20091aa204
+  # partnerKey
+  #partnerKey: 045fd70ea32acbd0ad7fe74a8e3c0c66
+  partnerKey: 2ce3d00bb802819a78cb84875695ff8f
 

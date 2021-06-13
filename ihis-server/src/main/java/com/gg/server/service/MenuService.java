@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface MenuService extends IService<Menu> {
     /**
-     * 通过用户ID获取用户信息
+     * 通过用户ID获取用户菜单
      * @return
      */
     List<Menu> getMenuByDoctorId();

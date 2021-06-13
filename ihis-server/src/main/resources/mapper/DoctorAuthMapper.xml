@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gg.server.mapper.edu.DoctorAuthMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.gg.server.entity.edu.DoctorAuth">
+        <id column="id" property="id" />
+        <result column="did" property="did" />
+        <result column="idCardNum" property="idCardNum" />
+        <result column="idCardImgFront" property="idCardImgFront" />
+        <result column="idCardImgBack" property="idCardImgBack" />
+        <result column="graduateNum" property="graduateNum" />
+        <result column="graduateImgFront" property="graduateImgFront" />
+        <result column="practiceNum" property="practiceNum" />
+        <result column="practiceImg" property="practiceImg" />
+        <result column="certificateNum" property="certificateNum" />
+        <result column="certificateImg" property="certificateImg" />
+        <result column="certificateTypeName" property="certificateTypeName" />
+        <result column="workImg" property="workImg" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, did, idCardNum, idCardImgFront, idCardImgBack, graduateNum, graduateImgFront, practiceNum, practiceImg, certificateNum, certificateImg, certificateTypeName, workImg
+    </sql>
+    <insert id="addDoctorAuth">
+        INSERT INTO edu_doctor_auth ( did, idCardNum,idCardImgFront,idCardImgBack,graduateNum,graduateImgFront,practiceNum,practiceImg,certificateNum,certificateImg,certificateTypeName,workImg )
+        VALUES
+        (#{doctorAuth.did},
+         hex(AES_ENCRYPT( #{doctorAuth.idCardNum}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.idCardImgFront}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.idCardImgBack}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.graduateNum}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.graduateImgFront}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.practiceNum}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.practiceImg}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.certificateNum}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.certificateImg}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.certificateTypeName}, '${AES_KEY}' )),
+         hex(AES_ENCRYPT( #{doctorAuth.workImg}, '${AES_KEY}' ))
+        )
+    </insert>
+    <select id="selectDoctorAuthById" resultType="com.gg.server.entity.edu.DoctorAuth">
+        SELECT
+            da.id as id,
+            da.did as did,
+            AES_DECRYPT(unhex(da.idCardNum), '${AES_KEY}') as idCardNum,
+            AES_DECRYPT(unhex(da.idCardImgFront), '${AES_KEY}') as idCardImgFront,
+            AES_DECRYPT(unhex(da.idCardImgBack), '${AES_KEY}') as idCardImgBack,
+            AES_DECRYPT(unhex(da.graduateNum), '${AES_KEY}') as graduateNum,
+            AES_DECRYPT(unhex(da.graduateImgFront), '${AES_KEY}') as graduateImgFront,
+            AES_DECRYPT(unhex(da.practiceNum), '${AES_KEY}') as practiceNum,
+            AES_DECRYPT(unhex(da.certificateNum), '${AES_KEY}') as certificateNum,
+            AES_DECRYPT(unhex(da.certificateImg), '${AES_KEY}') as certificateImg,
+            AES_DECRYPT(unhex(da.certificateTypeName), '${AES_KEY}') as certificateTypeName,
+            AES_DECRYPT(unhex(da.workImg), '${AES_KEY}') as workImg
+        FROM
+            edu_doctor_base db
+        inner JOIN
+            edu_doctor_auth da
+        ON
+            db.authId = da.id
+        AND
+            db.id = #{id}
+    </select>
+
+</mapper>

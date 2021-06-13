@@ -1,4 +1,4 @@
-package com.gg.server.config;
+package com.gg.server.config.Exception;
 
 import com.gg.server.pojo.RespBean;
 import org.slf4j.Logger;
@@ -27,4 +27,11 @@ public class GlobalException {
         }
         return RespBean.error("数据库异常，操作失败！");
     }
+    @ExceptionHandler(ErrorCodeException.class)
+    public RespBean errorCodeException(ErrorCodeException e) {
+        logger.error(e.toString());
+        return  RespBean.error(e.getErrorMsg());
+    }
+
+
 }

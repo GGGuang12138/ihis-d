@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gg.server.mapper.FileInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.gg.server.entity.FileInfo">
+        <id column="id" property="id" />
+        <result column="alias_path" property="aliasPath" />
+        <result column="base_path" property="basePath" />
+        <result column="file_size" property="fileSize" />
+        <result column="merge_time" property="mergeTime" />
+        <result column="original_name" property="originalName" />
+        <result column="partner_id" property="partnerId" />
+        <result column="postfix" property="postfix" />
+        <result column="upload_time" property="uploadTime" />
+        <result column="url" property="url" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, alias_path, base_path, file_size, merge_time, original_name, partner_id, postfix, upload_time, url
+    </sql>
+
+</mapper>

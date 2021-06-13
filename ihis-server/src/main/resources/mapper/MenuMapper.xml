@@ -42,6 +42,8 @@
         </collection>
     </resultMap>
 
+
+
     <select id="getMenuByDoctorId" resultMap="Menus">
         SELECT
             DISTINCT
