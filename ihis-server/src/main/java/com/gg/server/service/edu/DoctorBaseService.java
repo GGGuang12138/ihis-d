@@ -6,6 +6,7 @@ import com.gg.server.entity.edu.DoctorAuth;
 import com.gg.server.entity.edu.DoctorBase;
 import com.gg.server.entity.edu.RefundInfo;
 import com.gg.server.pojo.RespBean;
+import com.gg.server.pojo.RespPageBean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,4 +70,13 @@ public interface DoctorBaseService extends IService<DoctorBase> {
      * @return
      */
     RespBean passDoctorAuth(Integer doctorId);
+
+    /**
+     * 获取所有个人信息
+     * @param currentPage
+     * @param size
+     * @param doctorBase
+     * @return
+     */
+    RespPageBean getAllPerson(Integer currentPage, Integer size, DoctorBase doctorBase);
 }

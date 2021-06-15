@@ -30,5 +30,25 @@
     <sql id="Base_Column_List">
         id, name, sex, hspId, offLineId, titleId, titleName, deptId, deptName, des, better, state, hspName, coverUrl, authId,updateTime,did
     </sql>
+    <select id="selectAllPerson" resultType="com.gg.server.entity.edu.DoctorBase">
+        select
+        *
+        from
+        edu_doctor_base a
+        where
+        1 = 1
+        <if test="null==doctorBase.state">
+            AND
+            (a.state = 1 OR a.state = 3)
+        </if>
+        <if test="null!=doctorBase.state">
+            AND
+            a.state = #{doctorBase.state}
+        </if>
+        <if test="null!=doctorBase.hspId">
+            AND
+            a.hspId = #{doctorBase.hspId}
+        </if>
+    </select>
 
 </mapper>

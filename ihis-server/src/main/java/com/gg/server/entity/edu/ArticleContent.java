@@ -89,4 +89,15 @@ public class ArticleContent implements Serializable {
     @TableField(exist = false)
     private DoctorBase DoctorBase;
 
+    @ApiModelProperty(value = "医院Id")
+    private Integer hspId;
+
+    @ApiModelProperty(value = "评论数")
+    @TableField(exist = false)
+    private Integer commentCount;
+
+    @ApiModelProperty(value = "点赞数")
+    @TableField(exist = false)
+    private Integer likeCount;
+
 }

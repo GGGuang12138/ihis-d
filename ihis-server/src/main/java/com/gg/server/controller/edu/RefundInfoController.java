@@ -39,6 +39,16 @@ public class RefundInfoController {
         return refundInfo;
     }
 
+    @ApiOperation(value = "获取文章驳回信息")
+    @GetMapping("/edu/manager/getArticleRefundInfo/{id}")
+    public RefundInfo getArticleRefundInfo(@PathVariable Integer id){
+        List<RefundInfo> refundInfos = refundInfoMapper.selectList(new QueryWrapper<RefundInfo>()
+                .eq("checkId", id)
+                .eq("refundType", 0).orderByDesc("id"));
+        RefundInfo refundInfo = refundInfos.get(0);
+        return refundInfo;
+    }
+
 
 
 }

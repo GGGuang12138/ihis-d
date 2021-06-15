@@ -172,6 +172,7 @@ public class DoctorServiceImpl extends ServiceImpl<DoctorMapper, Doctor> impleme
             doctorOld.setPhone(doctor.getPhone());
             doctorOld.setAccountType(doctor.getAccountType());
             doctorOld.setRemark(doctor.getRemark());
+            doctor.setEnabled(doctor.isEnabled());
             doctorMapper.updateById(doctorOld);
             // 添加菜单
             // 遍历老角色列表是否还在新角色列表

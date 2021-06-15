@@ -19,6 +19,7 @@
         <result column="articleType" property="articleType"/>
         <result column="contentUrl" property="contentUrl"/>
         <result column="firstCheck" property="firstCheck"/>
+        <result column="hspId" property="hspId"/>
     </resultMap>
 
     <resultMap id="ArticleSimpleInfo" type="com.gg.server.entity.edu.ArticleContent" extends="BaseResultMap">
@@ -42,7 +43,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, cid, creatorId, creatorName, creatorTime, title, coverCount, coverUrl, articleState, contentSummary, contentId, updateTime, articleType, contentUrl, firstCheck
+        id, cid, creatorId, creatorName, creatorTime, title, coverCount, coverUrl, articleState, contentSummary, contentId, updateTime, articleType, contentUrl, firstCheck, hspId
     </sql>
 
     <select id="getArticleByPage" resultMap="ArticleSimpleInfo">
@@ -52,8 +53,6 @@
             a.creatorTime as creatorTime,
             a.articleState as articleState,
             a.updateTime as updateTime,
-            a.contentId as contentId,
-            a.coverUrl as coverUrl,
             a.title as title,
             a.articleType as articleType,
             c.name as cname
@@ -74,7 +73,19 @@
                 AND
                 a.cid = #{articleContent.cid}
             </if>
-            <if test="null!=articleContent.articleState">
+            <if test="null!=articleContent.hspId">
+                AND
+                a.hspId = #{articleContent.hspId}
+            </if>
+            <if test="null!=articleContent.creatorId">
+                AND
+                a.creatorId = #{articleContent.creatorId}
+            </if>
+            <if test="null!=articleContent.articleState and isFinish != 0">
+                AND
+                (a.articleState = 0 OR a.articleState = 2 OR (a.articleState = 1 AND a.firstCheck = true))
+            </if>
+            <if test="null!=articleContent.articleState and isFinish == 0">
                 AND
                 a.articleState = #{articleContent.articleState}
             </if>
@@ -101,7 +112,8 @@
             b.id as did,
             b.hspName as dhspName,
             b.coverUrl as dcoverUrl,
-            b.deptName as ddeptName
+            b.deptName as ddeptName,
+            a.firstCheck as firstCheck
 
         FROM
             edu_article_content a,
@@ -115,6 +127,43 @@
             a.articleState = #{articleStatus}
           AND
             a.firstCheck = #{firstCheck}
+        order by a.updateTime DESC
+    </select>
+
+    <select id="getArticleByStatusHsp" resultMap="ArticleWithChannelDoctor">
+        SELECT
+            a.id as id,
+            a.creatorId as creatorId,
+            a.creatorName as creatorName,
+            a.creatorTime as creatorTime,
+            a.articleState as articleState,
+            a.articleType as articleType,
+            a.updateTime as updateTime,
+            a.contentId as contentId,
+            a.coverUrl as coverUrl,
+            a.title as title,
+            a.firstCheck as firstCheck,
+            c.name as cname,
+            b.id as did,
+            b.hspName as dhspName,
+            b.coverUrl as dcoverUrl,
+            b.deptName as ddeptName
+        FROM
+            edu_article_content a,
+            edu_channel c,
+            edu_doctor_base b
+        WHERE
+            a.cid = c.id
+          AND
+            a.creatorId = b.id
+          AND
+            a.articleState = #{articleStatus}
+          AND
+            a.firstCheck = #{firstCheck}
+          AND
+            a.hspId = #{hspId}
+        order by a.updateTime DESC
+
     </select>
 
 </mapper>

@@ -1,11 +1,14 @@
 package com.gg.server.service.edu.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gg.server.config.Exception.ErrorCodeException;
 import com.gg.server.entity.Doctor;
 import com.gg.server.entity.DoctorRole;
 import com.gg.server.entity.Role;
+import com.gg.server.entity.edu.ArticleContent;
 import com.gg.server.entity.edu.DoctorAuth;
 import com.gg.server.entity.edu.DoctorBase;
 import com.gg.server.entity.edu.RefundInfo;
@@ -15,6 +18,7 @@ import com.gg.server.mapper.edu.DoctorAuthMapper;
 import com.gg.server.mapper.edu.DoctorBaseMapper;
 import com.gg.server.mapper.edu.RefundInfoMapper;
 import com.gg.server.pojo.RespBean;
+import com.gg.server.pojo.RespPageBean;
 import com.gg.server.pojo.enums.DoctorStatus;
 import com.gg.server.service.edu.DoctorBaseService;
 import com.gg.server.utils.DoctorUtils;
@@ -51,6 +55,13 @@ public class DoctorBaseServiceImpl extends ServiceImpl<DoctorBaseMapper, DoctorB
     public List<DoctorBase> getUncheckPerson() {
         List<DoctorBase> doctor = doctorBaseMapper.selectList(new QueryWrapper<DoctorBase>().eq("state", DoctorStatus.WAIT_REVIEW));
         return  doctor;
+    }
+
+    @Override
+    public RespPageBean getAllPerson(Integer currentPage, Integer size, DoctorBase doctorBase) {
+        Page<DoctorBase> page = new Page<>(currentPage,size);
+        IPage<DoctorBase> articleByPage = doctorBaseMapper.selectAllPerson(page, doctorBase);
+        return new RespPageBean(articleByPage.getTotal(),articleByPage.getRecords());
 
     }
 
@@ -87,7 +98,7 @@ public class DoctorBaseServiceImpl extends ServiceImpl<DoctorBaseMapper, DoctorB
         doctorNew.setPhone(doctor.getUsername());
         doctorNew.setUserFace(doctor.getUserFace());
         doctorMapper.updateById(doctorNew);
-
+        DoctorUtils.getCurrentAdmin().getBaseId();
         DoctorBase doctorBaseNew = doctorBaseMapper.selectById(DoctorUtils.getCurrentAdmin().getBaseId());
         doctorBaseNew.setName(doctor.getRealName());
         doctorBaseNew.setCoverUrl(doctor.getUserFace());

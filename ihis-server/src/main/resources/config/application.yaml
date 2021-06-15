@@ -63,9 +63,7 @@ file-service:
   # classId-img
   classId-img: e695bdb48b01db04fd20b95f3e61f092
   # partnerId
-  #partnerId: ab2e51ab488a57e60b0f3117e3b76ebf
   partnerId: c9062ae380fbcf83eb9e9c20091aa204
   # partnerKey
-  #partnerKey: 045fd70ea32acbd0ad7fe74a8e3c0c66
   partnerKey: 2ce3d00bb802819a78cb84875695ff8f
 

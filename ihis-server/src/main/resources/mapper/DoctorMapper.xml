@@ -59,6 +59,7 @@
             d.id AS id,
             d.username as username,
             d.userFace as userFace,
+            d.enabled as enabled,
             d.realName as realName,
             d.createTime as createTime,
             dr.rid as rid,
@@ -72,6 +73,7 @@
             d.id = dr.doctorId
           AND
             dr.rid = r.id
+        ORDER BY createTime DESC
     </select>
     <select id="getAccountById" resultMap="AccountsWithRole">
         SELECT

@@ -27,7 +27,9 @@
         SELECT
             r.id,
             r.name,
-            r.nameZh
+            r.nameZh,
+            r.hspId,
+            r.roleType
         FROM
             d_role r
                 LEFT JOIN

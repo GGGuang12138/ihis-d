@@ -5,18 +5,19 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.gg.server.entity.edu.CommentInfo">
         <id column="id" property="id" />
-        <result column="zip" property="zip" />
         <result column="uid" property="uid" />
         <result column="content" property="content" />
         <result column="createTime" property="createTime" />
         <result column="updateTime" property="updateTime" />
         <result column="commentCount" property="commentCount" />
         <result column="likeCount" property="likeCount" />
+        <result column="commentStatus" property="commentStatus" />
+        <result column="commentType" property="commentType" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, zip, uid, content, createTime, updateTime, commentCount, likeCount
+        id, uid, content, createTime, updateTime, commentCount, likeCount, commentStatus, commentType
     </sql>
 
 </mapper>

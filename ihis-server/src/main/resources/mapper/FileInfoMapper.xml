@@ -14,11 +14,53 @@
         <result column="postfix" property="postfix" />
         <result column="upload_time" property="uploadTime" />
         <result column="url" property="url" />
+        <result column="username" property="username" />
+        <result column="classId" property="classId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, alias_path, base_path, file_size, merge_time, original_name, partner_id, postfix, upload_time, url
+        id, alias_path, base_path, file_size, merge_time, original_name, partner_id, postfix, upload_time, url,username, classId
     </sql>
+    <select id="getArticleByPage" resultType="com.gg.server.entity.FileInfo">
+        select
+        a.id as id,
+        a.alias_path as aliasPath,
+        a.base_path as basePath,
+        a.file_size as filesize,
+        a.merge_time as mergeTime,
+        a.original_name as originalName,
+        a.partner_id as partnerId,
+        a.postfix as postfix,
+        a.upload_time as uploadTime,
+        a.url as url,
+        a.username as username,
+        a.classId as classId
+        from
+        upload_file_info a
+        WHERE
+        1 = 1
+        <if test="null!=fileInfo.classId and ''!=fileInfo.classId">
+            AND
+            a.classId = #{fileInfo.classId}
+        </if>
+        <if test="null!=fileInfo.username and ''!=fileInfo.username">
+            AND
+            a.username LIKE CONCAT('%', #{fileInfo.username},'%')
+        </if>
+        <if test="null!=fileInfo.originalName and ''!=fileInfo.originalName">
+            AND
+            a.original_name LIKE CONCAT('%', #{fileInfo.originalName},'%')
+        </if>
+        <if test="null!=sizeScope and 2 == sizeScope.length">
+            AND a.file_size BETWEEN #{sizeScope[0]} AND #{sizeScope[1]}
+        </if>
+        <if test="null!=fileInfo.id and fileInfo.id == 0">
+            AND a.postfix = 'jpeg' OR a.postfix = 'png'
+        </if>
+        <if test="null!=fileInfo.id and fileInfo.id == 1">
+            AND a.postfix = 'mp4' OR a.postfix = 'avi'
+        </if>
+    </select>
 
 </mapper>

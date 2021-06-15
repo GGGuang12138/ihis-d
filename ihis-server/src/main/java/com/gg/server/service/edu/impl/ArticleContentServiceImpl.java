@@ -1,17 +1,18 @@
 package com.gg.server.service.edu.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gg.server.config.Exception.ErrorCodeException;
-import com.gg.server.entity.edu.ArticleContent;
-import com.gg.server.entity.edu.ArticleDetail;
-import com.gg.server.entity.edu.RefundInfo;
-import com.gg.server.mapper.edu.ArticleContentMapper;
-import com.gg.server.mapper.edu.ArticleDetailMapper;
-import com.gg.server.mapper.edu.RefundInfoMapper;
+import com.gg.server.entity.Doctor;
+import com.gg.server.entity.Role;
+import com.gg.server.entity.edu.*;
+import com.gg.server.mapper.DoctorMapper;
+import com.gg.server.mapper.edu.*;
 import com.gg.server.pojo.RespBean;
 import com.gg.server.pojo.RespPageBean;
+import com.gg.server.pojo.enums.AccountType;
 import com.gg.server.pojo.enums.ArticleStatus;
 import com.gg.server.pojo.enums.ArticleType;
 import com.gg.server.pojo.param.edu.ArticleContentParam;
@@ -44,6 +45,12 @@ public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentMapper,
     private ArticleDetailMapper articleDetailMapper;
     @Autowired
     private RefundInfoMapper refundInfoMapper;
+    @Autowired
+    private DoctorBaseMapper doctorBaseMapper;
+    @Autowired
+    private DoctorMapper doctorMapper;
+    @Autowired
+    private CommentInfoMapper commentInfoMapper;
 
 
     /**
@@ -63,8 +70,20 @@ public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentMapper,
         // 其他信息
         ArticleContent articleContent = new ArticleContent();
         articleContent.setCid(articleContentParam.getChannelId());
-        articleContent.setCreatorId(DoctorUtils.getCurrentAdmin().getId());
-        articleContent.setCreatorName(DoctorUtils.getCurrentAdmin().getRealName());
+        if (articleContentParam.getDoctorId()!= null){
+            // 代发
+            articleContent.setCreatorId(articleContentParam.getDoctorId());
+            DoctorBase doctorBase = doctorBaseMapper.selectById(articleContentParam.getDoctorId());
+            articleContent.setCreatorName(doctorBase.getName());
+            articleContent.setHspId(doctorBase.getHspId());
+        }else{
+            // 己发
+            articleContent.setCreatorId(DoctorUtils.getCurrentAdmin().getId());
+            Doctor doctor = doctorMapper.selectById(DoctorUtils.getCurrentAdmin().getId());
+            DoctorBase doctorBase = doctorBaseMapper.selectById(doctor.getBaseId());
+            articleContent.setHspId(doctorBase.getHspId());
+            articleContent.setCreatorName(DoctorUtils.getCurrentAdmin().getRealName());
+        }
         articleContent.setCreatorTime(LocalDateTime.now());
         articleContent.setUpdateTime(LocalDateTime.now());
         articleContent.setTitle(articleContentParam.getTitle());
@@ -83,6 +102,9 @@ public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentMapper,
             articleContent.setArticleState(ArticleStatus.DRAFT);
         }else {
             articleContent.setArticleState(ArticleStatus.WAIT_REVIEW);
+        }
+        if (articleContentParam.getArticleType().equals(ArticleType.VOD)){
+            articleContent.setContentUrl(articleContentParam.getContentUrl());
         }
         articleContentMapper.insert(articleContent);
         return RespBean.success("新增成功");
@@ -114,9 +136,9 @@ public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentMapper,
             }
         }
         if (draft) {
-            articleContent.setArticleState(ArticleStatus.WAIT_REVIEW);
-        }else {
             articleContent.setArticleState(ArticleStatus.DRAFT);
+        }else {
+            articleContent.setArticleState(ArticleStatus.WAIT_REVIEW);
         }
         articleContentMapper.updateById(articleContent);
         return RespBean.success("修改成功");
@@ -133,8 +155,35 @@ public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentMapper,
      */
     @Override
     public RespPageBean getArticles(Integer currentPage, Integer size, ArticleContent articleContent, String[] dateScope) {
+        if (DoctorUtils.getCurrentAdmin().getAccountType().equals(AccountType.DOCTOR)){
+            articleContent.setCreatorId(DoctorUtils.getCurrentAdmin().getId());
+        }
+        if (DoctorUtils.getCurrentAdmin().getAccountType().equals(AccountType.HOSPITAL)){
+            List<Role> roles = DoctorUtils.getCurrentAdmin().getRoles();
+            for (Role role:roles){
+                if(role.getHspId() !=null){
+                    articleContent.setHspId(role.getHspId());
+                    break;
+                }
+            }
+        }
         Page<ArticleContent> page = new Page<>(currentPage,size);
-        IPage<ArticleContent> articleByPage = articleContentMapper.getArticleByPage(page, articleContent, dateScope);
+        IPage<ArticleContent> articleByPage = null;
+        if (ArticleStatus.FINISH.equals(articleContent.getArticleState())){
+            articleByPage = articleContentMapper.getArticleByPage(page, articleContent,1, dateScope);
+        }else{
+            articleByPage = articleContentMapper.getArticleByPage(page, articleContent,0, dateScope);
+        }
+
+        List<ArticleContent> records = articleByPage.getRecords();
+        for (ArticleContent record : records){
+            Integer selectCount = commentInfoMapper.selectCount(new QueryWrapper<CommentInfo>()
+                    .eq("zid", record.getId()));
+            record.setCommentCount(selectCount);
+            record.setLikeCount(selectCount+3);
+            record.setCommentCount(selectCount == 0 ? 0:selectCount-1);
+        }
+
         return new RespPageBean(articleByPage.getTotal(),articleByPage.getRecords());
     }
 
@@ -149,6 +198,7 @@ public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentMapper,
 
     @Override
     public List<ArticleContent> getUncheckArticles(ArticleStatus articleStatus) {
+
         List<ArticleContent> articleByStatus = articleContentMapper.getArticleByStatus(articleStatus, 1);
         return articleByStatus;
     }
@@ -161,6 +211,7 @@ public class ArticleContentServiceImpl extends ServiceImpl<ArticleContentMapper,
         }
         ArticleContent content = articleContentMapper.selectById(refundInfo.getCheckId());
         content.setArticleState(ArticleStatus.FAIL);
+        content.setFirstCheck(false);
         content.setUpdateTime(LocalDateTime.now());
         articleContentMapper.updateById(content);
         // 插入驳回记录

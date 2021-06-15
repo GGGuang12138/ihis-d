@@ -13,7 +13,9 @@ public enum ArticleStatus implements IEnum<Integer> {
     WAIT_REVIEW(1,"审核中"),
     FAIL(2,"审核未通过"),
     DRAFT(3,"草稿"),
-    OFF(4,"已下架");
+    OFF(4,"已下架"),
+    DELETE(5,"删除"),
+    FINISH(6,"经过审核");
 
     ArticleStatus(int value,String desc){
         this.value = value;

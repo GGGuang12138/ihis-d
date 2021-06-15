@@ -30,5 +30,7 @@ public class ArticleContentParam {
     private ArticleType articleType;
     @ApiModelProperty(value = "视频URL", required = false)
     private String contentUrl;
+    @ApiModelProperty(value = "医生Id", required = false)
+    private Integer doctorId;
 
 }

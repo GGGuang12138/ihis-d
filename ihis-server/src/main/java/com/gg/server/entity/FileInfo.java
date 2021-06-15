@@ -54,5 +54,11 @@ public class FileInfo implements Serializable {
 
     private String url;
 
+    private String username;
+
+    private String classId;
+
+
+
 
 }

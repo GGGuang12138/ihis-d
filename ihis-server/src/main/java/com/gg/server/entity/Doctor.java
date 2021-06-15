@@ -113,6 +113,7 @@ public class Doctor implements Serializable, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return this.enabled;
     }
+
 }
